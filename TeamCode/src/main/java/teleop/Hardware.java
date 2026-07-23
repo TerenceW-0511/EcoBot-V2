@@ -16,7 +16,7 @@ public class Hardware {
         backRightMotor = hwMap.get(DcMotor.class, "BackRightMotor");
 
         bucket= hwMap.get(Servo.class, "bucket");
-        waterTank= hwMap.get(Servo.class, "water");
+        //waterTank= hwMap.get(Servo.class, "water");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
