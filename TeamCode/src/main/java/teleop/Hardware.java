@@ -41,8 +41,8 @@ public class Hardware {
             backRightMotor.setPower(maxSpeed * (backRightPower/maxPower));
         }
 
-        public void setPostition(){
-
+        public void changeSeed(){
+            bucket.setPosition(0);
         }
 
 

@@ -9,7 +9,7 @@ public class SeedbotTele extends OpMode {
     Hardware bucket = new Hardware();
 
     public void init(){
-
+    bucket.changeSeed();
     }
 
     public void loop(){

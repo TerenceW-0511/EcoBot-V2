@@ -2,5 +2,5 @@ package teleop;
 
 public class Constants {
 
-     static final double angle1=
+     //static final double angle1=
 }

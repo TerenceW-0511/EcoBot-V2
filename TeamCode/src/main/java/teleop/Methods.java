@@ -3,10 +3,10 @@ package teleop;
 public class Methods extends Hardware{
     public void switchPosition (){
 
-        switch(){
+        /*switch(){
 
         }
 
-        bucket.setPosition();
+        bucket.setPosition();*/
     }
 }
