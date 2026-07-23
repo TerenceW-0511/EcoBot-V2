@@ -1,5 +1,8 @@
 package teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+@Disabled
 public class Values {
     static final double a0 = 180, a1 = 130, a2 = 130, a3 = 180;
     static final double

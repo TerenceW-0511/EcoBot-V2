@@ -1,3 +1,4 @@
+
 package teleop;
 
 import com.pedropathing.follower.Follower;
@@ -6,6 +7,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,7 +17,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 
 import java.util.List;
 import java.util.Objects;
-
+@Disabled
 @TeleOp(name = "Eco Bot Auto", group = "A")
 public class EcoBotAuto extends OpMode {
     private Follower follower;

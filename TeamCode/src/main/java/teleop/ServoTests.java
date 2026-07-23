@@ -3,6 +3,7 @@ package teleop;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 
 import java.util.ArrayList;
 
-
+@Disabled
 @TeleOp(name = "Servo Testing", group = "A")
 public class ServoTests extends OpMode {
     private Servo base, link1, link2, rotation, claw,bucket;

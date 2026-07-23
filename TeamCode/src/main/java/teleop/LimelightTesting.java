@@ -3,13 +3,14 @@ package teleop;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.List;
 import java.util.Objects;
-
+@Disabled
 @TeleOp(name = "Limelight Homography Testing", group = "A")
 public class LimelightTesting extends OpMode {
 
