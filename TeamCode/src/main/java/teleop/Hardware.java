@@ -11,7 +11,9 @@ public class Hardware {
     private DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
     private Servo bucket, waterTank;
 
-    Double angle;
+    private double angle = 0.0;
+    private int section = 0;
+
 
     public void init(HardwareMap hwMap) {
         //Configs
@@ -35,25 +37,27 @@ public class Hardware {
             double backRightPower = forward + strafe - rotate;
 
             double maxPower = 1;
-            double maxSpeed = 1;
 
             maxPower = Math.max(maxPower, Math.abs(frontLeftPower));
             maxPower = Math.max(maxPower, Math.abs(frontRightPower));
             maxPower = Math.max(maxPower, Math.abs(backLeftPower));
             maxPower = Math.max(maxPower, Math.abs(backRightPower));
 
-            frontLeftMotor.setPower(maxSpeed * (frontLeftPower/maxPower));
-            frontRightMotor.setPower(maxSpeed * (frontRightPower/maxPower));
-            backLeftMotor.setPower(maxSpeed * (backLeftPower/maxPower));
-            backRightMotor.setPower(maxSpeed * (backRightPower/maxPower));
+            frontLeftMotor.setPower((frontLeftPower/maxPower));
+            frontRightMotor.setPower((frontRightPower/maxPower));
+            backLeftMotor.setPower((backLeftPower/maxPower));
+            backRightMotor.setPower((backRightPower/maxPower));
         }
 
         // Seed mechanism
         public void changeSeed(Constants.TeleOpState[] state){
+            /**
             bucket.setPosition(angle+0.25);
             if(angle>=1.0){
                 angle = -1.0;
             }
+             **/
+            angle += 0.25;
 
         }
 
