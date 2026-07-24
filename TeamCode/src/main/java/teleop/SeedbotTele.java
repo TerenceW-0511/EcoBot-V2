@@ -2,6 +2,7 @@ package teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robot.Robot;
 
 @TeleOp
@@ -11,7 +12,9 @@ public class SeedbotTele extends OpMode {
     private Constants.TeleOpState state[] = new Constants.TeleOpState[1];
 
     public void init(){
-        state[0] = Constants.TeleOpState.FREE;
+        Robothardware.bucket = hardwareMap.get(Servo.class, "bucket");
+        Robothardware.bucket.setPosition(0.0);
+        //state[0] = Constants.TeleOpState.FREE;
 
         //hardware.changeSeed();
     }
@@ -23,7 +26,7 @@ public class SeedbotTele extends OpMode {
         boolean input2 = gamepad1.b;
         if (state[0] != Constants.TeleOpState.FREE)
         {
-            return;
+            //return;
         }
         if (input)
         {

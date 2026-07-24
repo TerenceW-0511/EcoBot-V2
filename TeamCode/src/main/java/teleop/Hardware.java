@@ -4,12 +4,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
 
 import java.util.concurrent.TimeUnit;
 
 public class Hardware {
     private DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
-    private Servo bucket, waterTank;
+    public Servo bucket;
+    private Servo waterTank;
 
     private double angle = 0.0;
     private int section = 0;
@@ -32,7 +34,7 @@ public class Hardware {
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        bucket.setPosition(-1);
+        bucket.setPosition(0);
 
     }
         public void drive(double forward, double strafe, double rotate) {
