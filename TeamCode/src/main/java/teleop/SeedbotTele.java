@@ -12,6 +12,7 @@ public class SeedbotTele extends OpMode {
 
     public void init(){
         state[0] = Constants.TeleOpState.FREE;
+
         //hardware.changeSeed();
     }
 

@@ -9,6 +9,8 @@ public class Hardware {
     private DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
     private Servo bucket, waterTank;
 
+    Double angle;
+
     public void init(HardwareMap hwMap) {
         //Configs
         frontLeftMotor = hwMap.get(DcMotor.class, "FrontLeftMotor");
@@ -21,6 +23,8 @@ public class Hardware {
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        bucket.setPosition(-1);
+
     }
         public void drive(double forward, double strafe, double rotate) {
             double frontLeftPower = forward + strafe + rotate;
@@ -44,7 +48,11 @@ public class Hardware {
 
         // Seed mechanism
         public void changeSeed(Constants.TeleOpState[] state){
-            bucket.setPosition(0);
+            bucket.setPosition(angle+0.25);
+            if(angle>=1.0){
+                angle = -1.0;
+            }
+
         }
         public void DrillandPlant(Constants.TeleOpState[] state)
         {
