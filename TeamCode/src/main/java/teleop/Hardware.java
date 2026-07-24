@@ -60,12 +60,6 @@ public class Hardware {
 
         // Seed mechanism
         public void changeSeed(Constants.TeleOpState[] state){
-            /**
-            bucket.setPosition(angle+0.25);
-            if(angle>=1.0){
-                angle = -1.0;
-            }
-             **/
             state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
             angle += 0.125;
             if ((0.0 <= angle) && (angle <= 1.0))
