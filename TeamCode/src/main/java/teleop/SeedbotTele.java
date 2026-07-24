@@ -16,6 +16,26 @@ public class SeedbotTele extends OpMode {
         //hardware.changeSeed();
     }
 
+    public void loop()
+    {
+        telemetry.addData("Seed section : ", Robothardware.GetAngle());
+        boolean input = gamepad1.a;
+        boolean input2 = gamepad1.b;
+        if (state[0] != Constants.TeleOpState.FREE)
+        {
+            return;
+        }
+        if (input)
+        {
+            Robothardware.changeSeed(state);
+
+        }
+        else if (input2)
+        {
+            Robothardware.ShootSeed(state);
+        }
+    }
+    /**
     public void loop(){
         double Horizontal = gamepad1.left_stick_x;
         double Vertical = gamepad1.left_stick_y;
@@ -44,5 +64,5 @@ public class SeedbotTele extends OpMode {
         }
         Robothardware.drive(Vertical, Horizontal, Rotation);
     }
-
+    **/
 }

@@ -14,6 +14,11 @@ public class Hardware {
     private double angle = 0.0;
     private int section = 0;
 
+    public double GetAngle()
+    {
+        return angle;
+    }
+
 
     public void init(HardwareMap hwMap) {
         //Configs
@@ -58,7 +63,27 @@ public class Hardware {
             }
              **/
             angle += 0.25;
+            if ((-1.0 <= angle) && (angle <= 1.0))
+            {
+                return;
+            }
+            if (angle > 1.0)
+            {
+                angle = -1.0;
+            }
 
+        }
+
+        public void ShootSeed(Constants.TeleOpState[] state)
+        {
+            state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
+            bucket.setPosition(0.0); // security feature: make sure that seeds aren't leaking out
+            bucket.setPosition(angle);
+
+            Methods.SLEEP(1000);
+
+            bucket.setPosition(0.0);
+            state[0] = Constants.TeleOpState.FREE;
         }
 
         // Code might be a bit too verbose, but it will hold for now
