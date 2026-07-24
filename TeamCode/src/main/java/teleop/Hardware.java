@@ -1,5 +1,7 @@
 package teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,9 +11,14 @@ import java.util.concurrent.TimeUnit;
 
 public class Hardware {
     private DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
-    private Servo bucket, waterTank;
+    public Servo bucket, waterTank;
 
-    Double angle;
+    private double angle;
+
+    public double GetAngle()
+    {
+        return angle;
+    }
 
     public void init(HardwareMap hwMap) {
         //Configs
@@ -50,11 +57,27 @@ public class Hardware {
 
         // Seed mechanism
         public void changeSeed(Constants.TeleOpState[] state){
-            bucket.setPosition(angle+0.25);
-            if(angle>=1.0){
-                angle = -1.0;
+            // Methods.SLEEP(500); Maybe put this if slowing doesn't currently suit anything
+            state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
+            angle += 0.125;
+            if ((0.0 <= angle) && (angle <= 1.0))
+            {
+                state[0] = Constants.TeleOpState.FREE;
+                return;
             }
+            angle = 0.0;
+            state[0] = Constants.TeleOpState.FREE;
+        }
 
+        public void ShootSeed(Constants.TeleOpState[] state)
+        {
+            state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
+            bucket.setPosition(angle);
+
+            Methods.SLEEP(1000);
+
+            bucket.setPosition(0.0);
+            state[0] = Constants.TeleOpState.FREE;
         }
 
         // Code might be a bit too verbose, but it will hold for now

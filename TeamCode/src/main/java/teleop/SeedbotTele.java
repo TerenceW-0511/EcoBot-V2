@@ -25,6 +25,8 @@ public class SeedbotTele extends OpMode {
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
 
+        if (state[0] == Constants.TeleOpState.ACTION_OCCUPIED) { return; }
+
         if (input)
         {
             Robothardware.changeSeed(state);
