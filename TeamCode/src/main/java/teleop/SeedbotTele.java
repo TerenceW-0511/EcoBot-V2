@@ -14,7 +14,7 @@ public class SeedbotTele extends OpMode {
     public void init(){
         Robothardware.bucket = hardwareMap.get(Servo.class, "bucket");
         Robothardware.bucket.setPosition(0.0);
-        //state[0] = Constants.TeleOpState.FREE;
+        state[0] = Constants.TeleOpState.FREE;
 
         //hardware.changeSeed();
     }
@@ -24,18 +24,17 @@ public class SeedbotTele extends OpMode {
         telemetry.addData("Seed section : ", Robothardware.GetAngle());
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
-        if (state[0] != Constants.TeleOpState.FREE)
-        {
-            //return;
-        }
+
         if (input)
         {
             Robothardware.changeSeed(state);
-
+            Methods.SLEEP(250);
+            state[0] = Constants.TeleOpState.FREE;
         }
         else if (input2)
         {
             Robothardware.ShootSeed(state);
+            state[0] = Constants.TeleOpState.FREE;
         }
     }
     /**
@@ -48,22 +47,18 @@ public class SeedbotTele extends OpMode {
         boolean DrillInput = gamepad1.b;
         boolean ChangeSeedInput = gamepad1.a;;
 
-        if ((DrillInput || ChangeSeedInput) && (state[0] != Constants.TeleOpState.ACTION_OCCUPIED))
-        {
-            state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
-            if (DrillInput)
-            {
-                Robothardware.DrillandPlant(state);
-            }
-            else if (ChangeSeedInput)
-            {
-                Robothardware.changeSeed(state);
-            }
-        }
-
-        if (((Horizontal == 0 && Vertical == 0) && Rotation == 0) || (state[0] == Constants.TeleOpState.ACTION_OCCUPIED))
+        if (state[0] != Constants.TeleOpState.FREE)
         {
             return;
+        }
+
+        if (DrillInput)
+        {
+            Robothardware.DrillandPlant(state);
+        }
+        else if (ChangeSeedInput)
+        {
+            Robothardware.changeSeed(state);
         }
         Robothardware.drive(Vertical, Horizontal, Rotation);
     }

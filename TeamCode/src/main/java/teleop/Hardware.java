@@ -1,5 +1,7 @@
 package teleop;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -64,15 +66,17 @@ public class Hardware {
                 angle = -1.0;
             }
              **/
-            angle += 0.25;
-            if ((-1.0 <= angle) && (angle <= 1.0))
+            state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
+            angle += 0.125;
+            if ((0.0 <= angle) && (angle <= 1.0))
             {
                 return;
             }
             if (angle > 1.0)
             {
-                angle = -1.0;
+                angle = 0.0;
             }
+            state[0] = Constants.TeleOpState.FREE;
 
         }
 
@@ -92,35 +96,7 @@ public class Hardware {
         public void DrillandPlant(Constants.TeleOpState[] state)
         {
             state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
-            drill.setDirection(DcMotorSimple.Direction.FORWARD);
-            drill.setPower(1.0);
 
-            slides.setDirection(DcMotorSimple.Direction.FORWARD);
-            slides.setPower(1.0);
-            // until slide is revealed, We prob need a detector
-            if (!Methods.SLEEP(Constants.TimeOfSlideExtending)) {
-                // Halt function if fails
-                state[0] = Constants.TeleOpState.FREE;
-                return;
-            }
-            slides.setPower(0.0);
-
-            if (!Methods.SLEEP(Constants.TimeOfDrilling)) {
-                // Halt function if fails
-                state[0] = Constants.TeleOpState.FREE;
-                return;
-            }
-
-            slides.setPower(-1.0);
-            drill.setPower(0);
-            // until slide is revealed, We prob need a detector
-            if (!Methods.SLEEP(Constants.TimeOfSlideExtending)) {
-                // Halt function if fails
-                state[0] = Constants.TeleOpState.FREE;
-                return;
-            }
-
-            slides.setPower(0.0);
             state[0] = Constants.TeleOpState.FREE;
         }
 
