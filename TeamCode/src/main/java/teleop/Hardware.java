@@ -1,6 +1,7 @@
 package teleop;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -35,17 +36,23 @@ public class Hardware {
             maxPower = Math.max(maxPower, Math.abs(backLeftPower));
             maxPower = Math.max(maxPower, Math.abs(backRightPower));
 
-            frontLeftMotor.setPower(maxSpeed * (frontLeftPower/maxPower));
-            frontRightMotor.setPower(maxSpeed * (frontRightPower/maxPower));
-            backLeftMotor.setPower(maxSpeed * (backLeftPower/maxPower));
-            backRightMotor.setPower(maxSpeed * (backRightPower/maxPower));
+            frontLeftMotor.setPower(frontLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backLeftMotor.setPower(backLeftPower);
+            backRightMotor.setPower(backRightPower);
         }
 
-        public void changeSeed(){
+        // Seed mechanism
+        public void changeSeed(Constants.TeleOpState[] state){
             bucket.setPosition(0);
         }
+        public void DrillandPlant(Constants.TeleOpState[] state)
+        {
+            slides.setDirection(DcMotorSimple.Direction.FORWARD);
+            slides.setPower(1.0);
+            // until slide is revealed, We prob need a detector
 
-
+        }
 
 
 
