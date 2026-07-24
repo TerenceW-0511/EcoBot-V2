@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.concurrent.TimeUnit;
+
 public class Hardware {
     private DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
     private Servo bucket, waterTank;
@@ -36,25 +38,51 @@ public class Hardware {
             maxPower = Math.max(maxPower, Math.abs(backLeftPower));
             maxPower = Math.max(maxPower, Math.abs(backRightPower));
 
-            frontLeftMotor.setPower(frontLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backLeftMotor.setPower(backLeftPower);
-            backRightMotor.setPower(backRightPower);
+            frontLeftMotor.setPower(maxSpeed * (frontLeftPower/maxPower));
+            frontRightMotor.setPower(maxSpeed * (frontRightPower/maxPower));
+            backLeftMotor.setPower(maxSpeed * (backLeftPower/maxPower));
+            backRightMotor.setPower(maxSpeed * (backRightPower/maxPower));
         }
 
         // Seed mechanism
         public void changeSeed(Constants.TeleOpState[] state){
             bucket.setPosition(0);
         }
+
+        // Code might be a bit too verbose, but it will hold for now
         public void DrillandPlant(Constants.TeleOpState[] state)
         {
+            state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
+            drill.setDirection(DcMotorSimple.Direction.FORWARD);
+            drill.setPower(1.0);
+
             slides.setDirection(DcMotorSimple.Direction.FORWARD);
             slides.setPower(1.0);
             // until slide is revealed, We prob need a detector
+            if (!Methods.SLEEP(Constants.TimeOfSlideExtending)) {
+                // Halt function if fails
+                state[0] = Constants.TeleOpState.FREE;
+                return;
+            }
+            slides.setPower(0.0);
 
+            if (!Methods.SLEEP(Constants.TimeOfDrilling)) {
+                // Halt function if fails
+                state[0] = Constants.TeleOpState.FREE;
+                return;
+            }
+
+            slides.setPower(-1.0);
+            drill.setPower(0);
+            // until slide is revealed, We prob need a detector
+            if (!Methods.SLEEP(Constants.TimeOfSlideExtending)) {
+                // Halt function if fails
+                state[0] = Constants.TeleOpState.FREE;
+                return;
+            }
+
+            slides.setPower(0.0);
+            state[0] = Constants.TeleOpState.FREE;
         }
-
-
-
 
 }
