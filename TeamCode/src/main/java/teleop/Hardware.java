@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.concurrent.TimeUnit;
 
 public class Hardware {
-    private DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
-    private Servo bucket, waterTank;
-
+    public DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
+    public Servo bucket, waterTank;
     Double angle;
+
+    int aboveLength;
 
     public void init(HardwareMap hwMap) {
         //Configs
@@ -49,13 +50,16 @@ public class Hardware {
         }
 
         // Seed mechanism
-        public void changeSeed(Constants.TeleOpState[] state){
-            bucket.setPosition(angle+0.25);
-            if(angle>=1.0){
-                angle = -1.0;
+        public void getAngle(Constants.TeleOpState[] state) {
+            aboveLength++;
+            if (aboveLength > Constants.values.length-1) {
+                aboveLength = 0;
             }
-
+            angle = Constants.values[aboveLength]
+            ;
         }
+
+
 
         // Code might be a bit too verbose, but it will hold for now
         public void DrillandPlant(Constants.TeleOpState[] state)
@@ -91,6 +95,12 @@ public class Hardware {
 
             slides.setPower(0.0);
             state[0] = Constants.TeleOpState.FREE;
+        }
+
+        public void changeSeed(){
+            bucket.setPosition(angle);
+            Methods.SLEEP(1000);
+            bucket.setPosition(0);
         }
 
 }
