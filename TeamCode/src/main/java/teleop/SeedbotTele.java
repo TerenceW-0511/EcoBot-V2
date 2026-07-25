@@ -24,16 +24,25 @@ public class SeedbotTele extends OpMode {
     public void loop() {
         telemetry.addData("Seed section : ", Robothardware.getAngle());
         telemetry.addData("Array Part: ", Robothardware.getAboveLength());
+        telemetry.addData("Sequance Target Ticks", Constants.sequenceTargetTicks);
+        telemetry.addData("Front Left Motor Location", Robothardware.frontLeftMotor.getCurrentPosition());
+        telemetry.addData("Front Right Motor Location", Robothardware.frontRightMotor.getCurrentPosition());
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
+        boolean input3 = gamepad1.dpad_up;
 
         //Drive inputs
         double forward = gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
         double rotate = gamepad1.right_stick_x;
 
-        Robothardware.drive(forward,strafe,rotate);
+        if (state[0]== Constants.TeleOpState.FREE) {
+            Robothardware.drive(forward, strafe, rotate);
+        }
 
+        if(input3){
+            Robothardware.moveToPlant(state);
+        }
 
         if (input) {
             Robothardware.changeAngle(state);

@@ -9,4 +9,6 @@ public class Constants {
      //static final double angle1=
      static final int TimeOfSlideExtending = 10000; // In Miliseconds
      static final int TimeOfDrilling = 10000; // In Miliseconds
+
+     static final int sequenceTargetTicks = 500; // Tick rate cal: Wheel Diameter (104) /Distance of drill-seed dispenser (35)* Encoder Tick rate (537.8).
 }

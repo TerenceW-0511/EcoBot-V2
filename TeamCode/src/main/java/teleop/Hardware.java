@@ -1,5 +1,7 @@
 package teleop;
 
+import android.app.usage.ConfigurationStats;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,8 +13,8 @@ public class Hardware {
     public DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
     public Servo bucket, waterTank;
     private double angle;
-
     private int aboveLength;
+
 
     public void init(HardwareMap hwMap) {
         //Configs
@@ -23,13 +25,20 @@ public class Hardware {
 
         bucket= hwMap.get(Servo.class, "bucket");
         //waterTank= hwMap.get(Servo.class, "water");
-
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         bucket.setPosition(-1);
 
     }
+
     public void drive(double forward, double strafe, double rotate) {
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backRightMotor,backRightMotor};
+
+        for (DcMotor singleMotor:motors){
+            singleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
         double frontLeftPower = forward + strafe + rotate;
         double backLeftPower = forward - strafe + rotate;
         double frontRightPower = forward - strafe - rotate;
@@ -59,7 +68,22 @@ public class Hardware {
         angle = Constants.values[aboveLength];
         state[0] = Constants.TeleOpState.FREE;
     }
+    public void moveToPlant(Constants.TeleOpState[] state){
+        state[0]= Constants.TeleOpState.ACTION_OCCUPIED;
 
+        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backRightMotor,backRightMotor};
+        for (DcMotor singleMotor: motors){
+            singleMotor.setTargetPosition(singleMotor.getCurrentPosition()-Constants.sequenceTargetTicks);
+        }
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightMotor.setPower(1); frontLeftMotor.setPower(1);
+        while (frontRightMotor.isBusy()&frontLeftMotor.isBusy()){
+
+        }
+        frontRightMotor.setPower(0); frontLeftMotor.setPower(0);
+        state[0]=Constants.TeleOpState.FREE;
+
+    }
 
     // Not in use currently, need to reprogram the entire thing
     public void DrillandPlant(Constants.TeleOpState[] state)
@@ -109,7 +133,6 @@ public class Hardware {
     {
         return angle;
     }
-
     public int getAboveLength()
     {
         return aboveLength;
