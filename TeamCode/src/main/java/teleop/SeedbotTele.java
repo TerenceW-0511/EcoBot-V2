@@ -22,8 +22,8 @@ public class SeedbotTele extends OpMode {
     }
 
     public void loop() {
-        telemetry.addData("Seed section : ", Robothardware.angle);
-        telemetry.addData("Array Part: ", Robothardware.aboveLength);
+        telemetry.addData("Seed section : ", Robothardware.getAngle());
+        telemetry.addData("Array Part: ", Robothardware.getAboveLength());
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
 
@@ -35,13 +35,13 @@ public class SeedbotTele extends OpMode {
         Robothardware.drive(forward,strafe,rotate);
 
 
-if (input) {
-            Robothardware.getAngle(state);
+        if (input) {
+            Robothardware.changeAngle(state);
             Methods.SLEEP(250);
             state[0] = Constants.TeleOpState.FREE;
         }
         if (input2){
-            Robothardware.changeSeed();
+            Robothardware.dispenseSeed(state);
             Robothardware.bucket.setPosition(0);
         }
         /*        else if (input2) {
