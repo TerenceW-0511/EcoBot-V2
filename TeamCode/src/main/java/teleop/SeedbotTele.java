@@ -23,12 +23,6 @@ public class SeedbotTele extends OpMode {
     }
 
     public void loop() {
-        telemetry.addData("Seed section ", Robothardware.getAngle());
-        telemetry.addData("Array Part ", Robothardware.getAboveLength());
-        telemetry.addData("Seed ", Robothardware.getSeed());
-        telemetry.addData("Sequance Target Ticks", Constants.sequenceTargetTicks);
-        telemetry.addData("Front Left Motor Location", Robothardware.frontLeftMotor.getCurrentPosition());
-        telemetry.addData("Front Right Motor Location", Robothardware.frontRightMotor.getCurrentPosition());
 
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
@@ -37,7 +31,7 @@ public class SeedbotTele extends OpMode {
 
         //Drive inputs
         double forward = gamepad1.left_stick_y;
-        double strafe = gamepad1.left_stick_x;
+        double strafe = gamepad1.left_stick_x * 1.1;
         double rotate = gamepad1.right_stick_x;
 
         if (state[0]== Constants.TeleOpState.FREE) {
@@ -77,7 +71,13 @@ public class SeedbotTele extends OpMode {
             Robothardware.drive(Vertical, Horizontal, Rotation);
 
             */
-
+        telemetry.addData("Seed section ", Robothardware.getAngle());
+        telemetry.addData("Array Part ", Robothardware.getAboveLength());
+        telemetry.addData("Seed ", Robothardware.getSeed());
+        telemetry.addData("Target Ticks", Robothardware.slides.getCurrentPosition());
+        telemetry.addData("Front Left Motor Location", Robothardware.frontLeftMotor.getCurrentPosition());
+        telemetry.addData("Front Right Motor Location", Robothardware.frontRightMotor.getCurrentPosition());
+        telemetry.update();
         }
     }
 

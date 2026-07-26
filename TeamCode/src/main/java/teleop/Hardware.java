@@ -24,6 +24,8 @@ public class Hardware {
         backLeftMotor = hwMap.get(DcMotor.class, "BackLeftMotor");
         backRightMotor = hwMap.get(DcMotor.class, "BackRightMotor");
         slides=hwMap.get(DcMotor.class, "slides");
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
        // drill = hwMap.get(DcMotor.class, "Drill");
         slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -33,39 +35,28 @@ public class Hardware {
         DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
 
         for (DcMotor singleMotor:motors){
+            singleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
             singleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            singleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
     }
 
     public void drive(double forward, double strafe, double rotate) {
 
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate), 1);
 
-        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
+        double frontLeftPower = (forward + strafe + rotate)/denominator;
+        double backLeftPower = (forward - strafe + rotate)/denominator;
+        double frontRightPower = (forward - strafe - rotate)/denominator;
+        double backRightPower = (forward + strafe - rotate)/denominator;
 
-        for (DcMotor singleMotor:motors){
-            singleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+        frontLeftMotor.setPower(frontLeftPower);
+        frontRightMotor.setPower(backLeftPower);
+        backLeftMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
 
-        double frontLeftPower = forward + strafe + rotate;
-        double backLeftPower = forward - strafe + rotate;
-        double frontRightPower = forward - strafe - rotate;
-        double backRightPower = forward + strafe - rotate;
-
-        double maxPower = 1;
-        double maxSpeed = 1;
-
-        maxPower = Math.max(maxPower, Math.abs(frontLeftPower));
-        maxPower = Math.max(maxPower, Math.abs(frontRightPower));
-        maxPower = Math.max(maxPower, Math.abs(backLeftPower));
-        maxPower = Math.max(maxPower, Math.abs(backRightPower));
-
-        frontLeftMotor.setPower(maxSpeed * (frontLeftPower/maxPower));
-        frontRightMotor.setPower(maxSpeed * (frontRightPower/maxPower));
-        backLeftMotor.setPower(maxSpeed * (backLeftPower/maxPower));
-        backRightMotor.setPower(maxSpeed * (backRightPower/maxPower));
     }
 
         // Seed mechanism
@@ -103,10 +94,8 @@ public class Hardware {
     }
 
     public void extend(Constants.TeleOpState[] state){
-        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slides.setTargetPosition(1);
-        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slides.setPower(100);
+        slides.setPower(1);
         while (slides.isBusy()){
 
         }
