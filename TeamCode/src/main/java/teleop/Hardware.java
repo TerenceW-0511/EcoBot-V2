@@ -15,6 +15,7 @@ public class Hardware {
     private double angle;
     private int aboveLength;
 
+    private String seed=Constants.seeds[0];
 
     public void init(HardwareMap hwMap) {
         //Configs
@@ -22,21 +23,27 @@ public class Hardware {
         frontRightMotor = hwMap.get(DcMotor.class, "FrontRightMotor");
         backLeftMotor = hwMap.get(DcMotor.class, "BackLeftMotor");
         backRightMotor = hwMap.get(DcMotor.class, "BackRightMotor");
-
-        drill = hwMap.get(DcMotor.class, "Drill");
-        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slides=hwMap.get(DcMotor.class, "slides");
+       // drill = hwMap.get(DcMotor.class, "Drill");
+        slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         bucket= hwMap.get(Servo.class, "bucket");
         //waterTank= hwMap.get(Servo.class, "water");
         bucket.setPosition(-1);
+        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
+
+        for (DcMotor singleMotor:motors){
+            singleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
 
     }
 
     public void drive(double forward, double strafe, double rotate) {
+
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backRightMotor,backRightMotor};
+        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
 
         for (DcMotor singleMotor:motors){
             singleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -69,27 +76,44 @@ public class Hardware {
             aboveLength = 0;
         }
         angle = Constants.values[aboveLength];
+        seed = Constants.seeds[aboveLength];
         state[0] = Constants.TeleOpState.FREE;
     }
 
     public void moveToPlant(Constants.TeleOpState[] state){
         state[0]= Constants.TeleOpState.ACTION_OCCUPIED;
 
-        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backRightMotor,backRightMotor};
+        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
         for (DcMotor singleMotor: motors){
             singleMotor.setTargetPosition(singleMotor.getCurrentPosition()-Constants.sequenceTargetTicks);
         }
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRightMotor.setPower(1); frontLeftMotor.setPower(1);
+        for(DcMotor singleMotor: motors){
+            singleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        for(DcMotor singleMotor : motors){
+            singleMotor.setPower(1);
+        }
         while (frontRightMotor.isBusy() & frontLeftMotor.isBusy()){
 
         }
-        frontRightMotor.setPower(0); frontLeftMotor.setPower(0);
+        for (DcMotor singleMotor: motors){
+            singleMotor.setPower(0);
+        }
         state[0]=Constants.TeleOpState.FREE;
-
     }
 
-    // Not in use currently, need to reprogram the entire thing
+    public void extend(Constants.TeleOpState[] state){
+        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slides.setTargetPosition(1);
+        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slides.setPower(100);
+        while (slides.isBusy()){
+
+        }
+        slides.setPower(0.0);
+    }
+
+  /*  // Not in use currently, need to reprogram the entire thing
     public void PlantProcess(Constants.TeleOpState[] state)
     {
         int curr = slides.getCurrentPosition();
@@ -114,7 +138,7 @@ public class Hardware {
 
         state[0] = Constants.TeleOpState.FREE;
     }
-
+*/
     public void dispenseSeed(Constants.TeleOpState[] state){
         state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
         bucket.setPosition(angle);
@@ -126,6 +150,12 @@ public class Hardware {
     public double getAngle()
     {
         return angle;
+
+    }
+    public String getSeed()
+    {
+        return seed;
+
     }
     public int getAboveLength()
     {

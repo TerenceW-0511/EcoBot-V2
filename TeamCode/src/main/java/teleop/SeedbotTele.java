@@ -2,6 +2,7 @@ package teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robot.Robot;
@@ -22,8 +23,9 @@ public class SeedbotTele extends OpMode {
     }
 
     public void loop() {
-        telemetry.addData("Seed section : ", Robothardware.getAngle());
-        telemetry.addData("Array Part: ", Robothardware.getAboveLength());
+        telemetry.addData("Seed section ", Robothardware.getAngle());
+        telemetry.addData("Array Part ", Robothardware.getAboveLength());
+        telemetry.addData("Seed ", Robothardware.getSeed());
         telemetry.addData("Sequance Target Ticks", Constants.sequenceTargetTicks);
         telemetry.addData("Front Left Motor Location", Robothardware.frontLeftMotor.getCurrentPosition());
         telemetry.addData("Front Right Motor Location", Robothardware.frontRightMotor.getCurrentPosition());
@@ -31,6 +33,7 @@ public class SeedbotTele extends OpMode {
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
         boolean input3 = gamepad1.dpad_up;
+        boolean input4 = gamepad1.right_bumper;
 
         //Drive inputs
         double forward = gamepad1.left_stick_y;
@@ -53,6 +56,10 @@ public class SeedbotTele extends OpMode {
         if (input2){
             Robothardware.dispenseSeed(state);
             Robothardware.bucket.setPosition(0);
+        }
+
+        if(input4){
+            Robothardware.extend(state);
         }
         /*        else if (input2) {
             Robothardware.ShootSeed(state);
