@@ -23,6 +23,9 @@ public class Hardware {
         backLeftMotor = hwMap.get(DcMotor.class, "BackLeftMotor");
         backRightMotor = hwMap.get(DcMotor.class, "BackRightMotor");
 
+        drill = hwMap.get(DcMotor.class, "Drill");
+        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         bucket= hwMap.get(Servo.class, "bucket");
         //waterTank= hwMap.get(Servo.class, "water");
         bucket.setPosition(-1);
@@ -68,6 +71,7 @@ public class Hardware {
         angle = Constants.values[aboveLength];
         state[0] = Constants.TeleOpState.FREE;
     }
+
     public void moveToPlant(Constants.TeleOpState[] state){
         state[0]= Constants.TeleOpState.ACTION_OCCUPIED;
 
@@ -77,7 +81,7 @@ public class Hardware {
         }
         frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRightMotor.setPower(1); frontLeftMotor.setPower(1);
-        while (frontRightMotor.isBusy()&frontLeftMotor.isBusy()){
+        while (frontRightMotor.isBusy() & frontLeftMotor.isBusy()){
 
         }
         frontRightMotor.setPower(0); frontLeftMotor.setPower(0);
@@ -86,38 +90,28 @@ public class Hardware {
     }
 
     // Not in use currently, need to reprogram the entire thing
-    public void DrillandPlant(Constants.TeleOpState[] state)
+    public void PlantProcess(Constants.TeleOpState[] state)
     {
+        int curr = slides.getCurrentPosition();
         state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
-        drill.setDirection(DcMotorSimple.Direction.FORWARD);
-        drill.setPower(1.0);
 
-        slides.setDirection(DcMotorSimple.Direction.FORWARD);
+        slides.setTargetPosition(Constants.SlideLoweredPosition); // Fixed location, not offset
         slides.setPower(1.0);
-        // until slide is revealed, We prob need a detector
-        if (!Methods.SLEEP(Constants.TimeOfSlideExtending)) {
-            // Halt function if fails
-            state[0] = Constants.TeleOpState.FREE;
-            return;
-        }
+
+        drill.setPower(1.0);
+        while (slides.isBusy()) {}
         slides.setPower(0.0);
 
-        if (!Methods.SLEEP(Constants.TimeOfDrilling)) {
-            // Halt function if fails
-            state[0] = Constants.TeleOpState.FREE;
-            return;
-        }
+        Methods.SLEEP(5000); // 5 seconds of drilling
 
-        slides.setPower(-1.0);
-        drill.setPower(0);
-        // until slide is revealed, We prob need a detector
-        if (!Methods.SLEEP(Constants.TimeOfSlideExtending)) {
-            // Halt function if fails
-            state[0] = Constants.TeleOpState.FREE;
-            return;
-        }
+        drill.setPower(0.0);
+        slides.setTargetPosition(curr);
+        slides.setPower(1.0);
 
-        slides.setPower(0.0);
+        // Planting process
+        moveToPlant(state);
+        dispenseSeed(state);
+
         state[0] = Constants.TeleOpState.FREE;
     }
 

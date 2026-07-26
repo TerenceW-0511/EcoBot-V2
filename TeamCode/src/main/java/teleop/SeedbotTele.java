@@ -27,6 +27,7 @@ public class SeedbotTele extends OpMode {
         telemetry.addData("Sequance Target Ticks", Constants.sequenceTargetTicks);
         telemetry.addData("Front Left Motor Location", Robothardware.frontLeftMotor.getCurrentPosition());
         telemetry.addData("Front Right Motor Location", Robothardware.frontRightMotor.getCurrentPosition());
+
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
         boolean input3 = gamepad1.dpad_up;
