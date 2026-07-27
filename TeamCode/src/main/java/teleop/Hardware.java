@@ -23,11 +23,18 @@ public class Hardware {
         frontRightMotor = hwMap.get(DcMotor.class, "FrontRightMotor");
         backLeftMotor = hwMap.get(DcMotor.class, "BackLeftMotor");
         backRightMotor = hwMap.get(DcMotor.class, "BackRightMotor");
-        slides=hwMap.get(DcMotor.class, "slides");
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-       // drill = hwMap.get(DcMotor.class, "Drill");
+
+
+        drill = hwMap.get(DcMotor.class, "drill");
+
+        //Slides Initialize
+        slides=hwMap.get(DcMotor.class, "slides");
         slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slides.setTargetPosition(0);
+        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slides.setPower(1);
 
         bucket= hwMap.get(Servo.class, "bucket");
         //waterTank= hwMap.get(Servo.class, "water");
@@ -35,8 +42,6 @@ public class Hardware {
         DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
 
         for (DcMotor singleMotor:motors){
-            singleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
             singleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             singleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
@@ -44,6 +49,11 @@ public class Hardware {
     }
 
     public void drive(double forward, double strafe, double rotate) {
+        DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
+
+        for (DcMotor singleMotor:motors){
+            singleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
         double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate), 1);
 
@@ -93,41 +103,30 @@ public class Hardware {
         state[0]=Constants.TeleOpState.FREE;
     }
 
-    public void extend(Constants.TeleOpState[] state){
-        slides.setTargetPosition(1);
-        slides.setPower(1);
-        while (slides.isBusy()){
-
-        }
-        slides.setPower(0.0);
+    public void drillSequence(Constants.TeleOpState[] state){
+        state[0]= Constants.TeleOpState.ACTION_OCCUPIED;
+        slides.setTargetPosition(Constants.SlideLoweredPosition);
+        drill.setPower(1);
+        slides.setPower(-0.5); // Lowering Slide
+        Methods.SLEEP(5000); //Wait for it to finish
+        slides.setTargetPosition(0);
+        drill.setPower(0);
+        slides.setPower(1); // Go back to 0
+        Methods.SLEEP(1000);
+        slides.setPower(0.0); //Hold Position Up
+        state[0]=Constants.TeleOpState.FREE;
     }
 
-  /*  // Not in use currently, need to reprogram the entire thing
-    public void PlantProcess(Constants.TeleOpState[] state)
+   // Not in use currently, need to reprogram the entire thing
+    public void plantSequence(Constants.TeleOpState[] state)
     {
-        int curr = slides.getCurrentPosition();
         state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
-
-        slides.setTargetPosition(Constants.SlideLoweredPosition); // Fixed location, not offset
-        slides.setPower(1.0);
-
-        drill.setPower(1.0);
-        while (slides.isBusy()) {}
-        slides.setPower(0.0);
-
-        Methods.SLEEP(5000); // 5 seconds of drilling
-
-        drill.setPower(0.0);
-        slides.setTargetPosition(curr);
-        slides.setPower(1.0);
-
-        // Planting process
+        drillSequence(state);
         moveToPlant(state);
         dispenseSeed(state);
-
         state[0] = Constants.TeleOpState.FREE;
     }
-*/
+
     public void dispenseSeed(Constants.TeleOpState[] state){
         state[0] = Constants.TeleOpState.ACTION_OCCUPIED;
         bucket.setPosition(angle);
