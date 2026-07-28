@@ -29,6 +29,7 @@ public class SeedbotTele extends OpMode {
         boolean input3 = gamepad1.dpad_up;
         boolean input4 = gamepad1.right_bumper;
         boolean input5= gamepad1.left_bumper;
+        boolean input6=gamepad1.dpad_down;
         //Drive inputs
         double forward = gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x * 1.1;
@@ -58,6 +59,9 @@ public class SeedbotTele extends OpMode {
 
         if(input5){
             Robothardware.plantSequence(state);
+        }
+        if (input6){
+            Robothardware.retractZero(state);
         }
         /*        else if (input2) {
             Robothardware.ShootSeed(state);

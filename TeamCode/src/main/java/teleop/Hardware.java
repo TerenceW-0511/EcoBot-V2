@@ -135,6 +135,15 @@ public class Hardware {
         state[0]=Constants.TeleOpState.FREE;
     }
 
+    public void retractZero(Constants.TeleOpState [] state){
+        state[0]=Constants.TeleOpState.ACTION_OCCUPIED;
+        slides.setPower(0.5);
+        Methods.SLEEP(1000);
+        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        state[0]=Constants.TeleOpState.FREE;
+    }
+
    // Not in use currently, need to reprogram the entire thing
     public void plantSequence(Constants.TeleOpState[] state)
     {
