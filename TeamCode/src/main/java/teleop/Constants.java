@@ -17,6 +17,6 @@ public class Constants {
      static final int SlideLoweredPosition = -950;
      static final String seeds[]= {"Lettece","Tomato","Cucumber","Mango","Mapletree","Wheat","Corn","Orange"};
 
-
+     // Test message
 
 }
