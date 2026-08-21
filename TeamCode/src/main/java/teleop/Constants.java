@@ -14,7 +14,7 @@ public class Constants {
 
      static final int sequenceTargetTicks = 500; // Tick rate cal: Wheel Diameter (104) /Distance of drill-seed dispenser (35)* Encoder Tick rate (537.8).
 
-     static final int SlideLoweredPosition = -950;
+     static final int SlideLoweredPosition = -200;
      static final String seeds[]= {"Lettece","Tomato","Cucumber","Mango","Mapletree","Wheat","Corn","Orange"};
 
      // Test message

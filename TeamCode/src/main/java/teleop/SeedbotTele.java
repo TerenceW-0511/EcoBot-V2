@@ -36,7 +36,7 @@ public class SeedbotTele extends OpMode {
         double rotate = gamepad1.right_stick_x;
 
         if (state[0]== Constants.TeleOpState.FREE) {
-            Robothardware.drive(forward, strafe, rotate);
+            Robothardware.drive(-forward, strafe, rotate);
         }
 
         if(input3){

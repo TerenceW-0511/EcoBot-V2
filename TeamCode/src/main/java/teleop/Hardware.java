@@ -5,7 +5,10 @@ import android.app.usage.ConfigurationStats;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+
 
 import org.opencv.core.Mat;
 
@@ -14,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class Hardware {
     public DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
     public Servo bucket, waterTank;
+
+    public GoBildaPinpointDriver pinpoint;
     private double angle;
     private int aboveLength;
 
@@ -27,7 +32,7 @@ public class Hardware {
         backRightMotor = hwMap.get(DcMotor.class, "BackRightMotor");
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-
+        pinpoint=hwMap.get(GobildaPinpointDriver, "pinpoint");
 
         drill = hwMap.get(DcMotor.class, "drill");
 
@@ -37,7 +42,6 @@ public class Hardware {
         slides.setTargetPosition(0);
         slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides.setPower(1);
-
         bucket= hwMap.get(Servo.class, "bucket");
         //waterTank= hwMap.get(Servo.class, "water");
         bucket.setPosition(-1);
@@ -103,17 +107,15 @@ public class Hardware {
 
         DcMotor motors [] = {frontRightMotor,frontLeftMotor,backLeftMotor,backRightMotor};
         for (DcMotor singleMotor: motors){
-            singleMotor.setTargetPosition(singleMotor.getCurrentPosition()-Constants.sequenceTargetTicks);
+            singleMotor.setTargetPosition(singleMotor.getCurrentPosition()+Constants.sequenceTargetTicks);
         }
         for(DcMotor singleMotor: motors){
             singleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         for(DcMotor singleMotor : motors){
-            singleMotor.setPower(1);
+            singleMotor.setPower(-1);
         }
-        while (frontRightMotor.isBusy() & frontLeftMotor.isBusy()){
-
-        }
+        Methods.SLEEP(1000);
         for (DcMotor singleMotor: motors){
             singleMotor.setPower(0);
         }
@@ -128,10 +130,8 @@ public class Hardware {
         Methods.SLEEP(5000); //Wait for it to finish
         slides.setTargetPosition(0);
         drill.setPower(0);
-        slides.setPower(0.8); // Go back to 0
-        Methods.SLEEP(1000);
-        slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slides.setPower(0.0); //Hold Position Up
+        slides.setPower(0.5); // Go back to 0
+        Methods.SLEEP(250);
         state[0]=Constants.TeleOpState.FREE;
     }
 
