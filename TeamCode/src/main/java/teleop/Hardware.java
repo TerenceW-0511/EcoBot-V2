@@ -141,14 +141,14 @@ public class Hardware {
     }
     public void startDrillDown() {
         slides.setTargetPosition(Constants.SlideLoweredPosition);
-        slides.setPower(0.5); // Speed limit
-        drill.setPower(1.0);  // Start drilling
+        drill.setPower(1);
+        slides.setPower(-0.5);
     }
 
     public void retractDrill() {
         slides.setTargetPosition(0);
         slides.setPower(0.5);
-        drill.setPower(0);    // Stop drilling
+        drill.setPower(0);
     }
 
     public void spitWater(Constants.TeleOpState [] state){
