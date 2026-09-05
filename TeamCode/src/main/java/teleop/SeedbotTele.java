@@ -88,7 +88,7 @@ public class SeedbotTele extends OpMode {
                 break;
 
             case RETRACTING:
-                if (drillTimer.seconds() >= 0.5) {
+                if (drillTimer.seconds() >= 2.5) {
                     drillState = DrillState.IDLE;
                 }
                 break;
