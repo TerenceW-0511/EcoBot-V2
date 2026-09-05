@@ -29,7 +29,7 @@ public class SeedbotTele extends OpMode {
         boolean input3 = gamepad1.dpad_up;
         boolean input4 = gamepad1.right_bumper;
         boolean input5= gamepad1.left_bumper;
-        boolean input6=gamepad1.dpad_down;
+        boolean input6 = gamepad1.dpad_down;
         //Drive inputs
         double forward = gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x * 1.1;
@@ -63,6 +63,9 @@ public class SeedbotTele extends OpMode {
         if (input6){
             Robothardware.retractZero(state);
         }
+        if (gamepad1.dpad_left){
+            Robothardware.spitWater(state);
+        }
         /*        else if (input2) {
             Robothardware.ShootSeed(state);
             state[0] = Constants.TeleOpState.FREE;
@@ -89,6 +92,7 @@ public class SeedbotTele extends OpMode {
         telemetry.addData("Front Right power",Robothardware.frontRightMotor.getPower());
         telemetry.addData("Back left power",Robothardware.backLeftMotor.getPower());
         telemetry.addData("Back Right power",Robothardware.backRightMotor.getPower());
+        telemetry.addData("slide ampage", Robothardware.getSlideCurrent());
         telemetry.update();
         }
     }

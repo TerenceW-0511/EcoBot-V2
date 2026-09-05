@@ -3,41 +3,46 @@ package teleop;
 import android.app.usage.ConfigurationStats;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+//import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
 
+import org.firstinspires.ftc.robotcore.external.Const;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.opencv.core.Mat;
 
 import java.util.concurrent.TimeUnit;
 
 public class Hardware {
-    public DcMotor frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill;
-    public Servo bucket, waterTank;
+    public DcMotorEx frontRightMotor, frontLeftMotor, backRightMotor, backLeftMotor, slides, drill, waterPump;
+    public Servo bucket;
 
-    public GoBildaPinpointDriver pinpoint;
+    //public GoBildaPinpointDriver pinpoint;
     private double angle;
     private int aboveLength;
 
+    public double slideCurrent;
     private String seed=Constants.seeds[0];
 
     public void init(HardwareMap hwMap) {
         //Configs
-        frontLeftMotor = hwMap.get(DcMotor.class, "FrontLeftMotor");
-        frontRightMotor = hwMap.get(DcMotor.class, "FrontRightMotor");
-        backLeftMotor = hwMap.get(DcMotor.class, "BackLeftMotor");
-        backRightMotor = hwMap.get(DcMotor.class, "BackRightMotor");
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        pinpoint=hwMap.get(GobildaPinpointDriver, "pinpoint");
+        frontLeftMotor = hwMap.get(DcMotorEx.class, "FrontLeftMotor");
+        frontRightMotor = hwMap.get(DcMotorEx.class, "FrontRightMotor");
+        backLeftMotor = hwMap.get(DcMotorEx.class, "BackLeftMotor");
+        backRightMotor = hwMap.get(DcMotorEx.class, "BackRightMotor");
+        frontLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        waterPump=hwMap.get(DcMotorEx.class, "water");
+        //pinpoint=hwMap.get(GobildaPinpointDriver, "pinpoint");
 
-        drill = hwMap.get(DcMotor.class, "drill");
+        drill = hwMap.get(DcMotorEx.class, "drill");
 
         //Slides Initialize
-        slides=hwMap.get(DcMotor.class, "slides");
+        slides=hwMap.get(DcMotorEx.class, "slides");
         slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slides.setTargetPosition(0);
         slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -134,11 +139,18 @@ public class Hardware {
         Methods.SLEEP(250);
         state[0]=Constants.TeleOpState.FREE;
     }
-
+    public void spitWater(Constants.TeleOpState [] state){
+        state[0]=Constants.TeleOpState.ACTION_OCCUPIED;
+        waterPump.setPower(1);
+        Methods.SLEEP(1000);
+        waterPump.setPower(0);
+        state[0]= Constants.TeleOpState.FREE;
+    }
     public void retractZero(Constants.TeleOpState [] state){
         state[0]=Constants.TeleOpState.ACTION_OCCUPIED;
+        slides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slides.setPower(0.5);
-        Methods.SLEEP(1000);
+        Methods.SLEEP(250);
         slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         state[0]=Constants.TeleOpState.FREE;
@@ -152,6 +164,7 @@ public class Hardware {
         moveToPlant(state);
         Methods.SLEEP(100);
         dispenseSeed(state);
+        spitWater(state);
         state[0] = Constants.TeleOpState.FREE;
     }
 
@@ -160,9 +173,15 @@ public class Hardware {
         bucket.setPosition(angle);
         Methods.SLEEP(1000);
         bucket.setPosition(0);
+        Methods.SLEEP(1000);
+        bucket.setPosition(Constants.values[7]);
         state[0] = Constants.TeleOpState.FREE;
     }
 
+    public double getSlideCurrent(){
+        slides.getCurrent(CurrentUnit.AMPS);
+        return slideCurrent;
+    }
     public double getAngle()
     {
         return angle;
