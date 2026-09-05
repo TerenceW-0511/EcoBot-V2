@@ -6,11 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class SeedbotTele extends OpMode {
     Hardware Robothardware = new Hardware();
-
+    private ElapsedTime drillTimer = new ElapsedTime();
+    private enum DrillState { IDLE, LOWERING, RETRACTING }
+    private DrillState drillState = DrillState.IDLE;
     private Constants.TeleOpState state[] = new Constants.TeleOpState[1];
 
     public void init() {
@@ -27,7 +30,7 @@ public class SeedbotTele extends OpMode {
         boolean input = gamepad1.a;
         boolean input2 = gamepad1.b;
         boolean input3 = gamepad1.dpad_up;
-        boolean input4 = gamepad1.right_bumper;
+       // boolean input4 = gamepad1.right_bumper;
         boolean input5= gamepad1.left_bumper;
         boolean input6 = gamepad1.dpad_down;
         //Drive inputs
@@ -53,9 +56,9 @@ public class SeedbotTele extends OpMode {
             Robothardware.bucket.setPosition(0);
         }
 
-        if(input4){
-            Robothardware.drillSequence(state);
-        }
+       // if(input4){
+       //     Robothardware.drillSequence(state);
+       // }
 
         if(input5){
             Robothardware.plantSequence(state);
@@ -65,6 +68,30 @@ public class SeedbotTele extends OpMode {
         }
         if (gamepad1.dpad_left){
             Robothardware.spitWater(state);
+        }
+
+        switch (drillState) {
+            case IDLE:
+                if (gamepad1.right_bumper) {
+                    Robothardware.startDrillDown();
+                    drillTimer.reset();
+                    drillState = DrillState.LOWERING;
+                }
+                break;
+
+            case LOWERING:
+                if (drillTimer.seconds() >= 5.0) {
+                    Robothardware.retractDrill();
+                    drillTimer.reset();
+                    drillState = DrillState.RETRACTING;
+                }
+                break;
+
+            case RETRACTING:
+                if (drillTimer.seconds() >= 0.5) {
+                    drillState = DrillState.IDLE;
+                }
+                break;
         }
         /*        else if (input2) {
             Robothardware.ShootSeed(state);
@@ -92,7 +119,7 @@ public class SeedbotTele extends OpMode {
         telemetry.addData("Front Right power",Robothardware.frontRightMotor.getPower());
         telemetry.addData("Back left power",Robothardware.backLeftMotor.getPower());
         telemetry.addData("Back Right power",Robothardware.backRightMotor.getPower());
-        telemetry.addData("slide ampage", Robothardware.getSlideCurrent());
+        telemetry.addData("slide amprage", Robothardware.getSlideCurrent());
         telemetry.update();
         }
     }

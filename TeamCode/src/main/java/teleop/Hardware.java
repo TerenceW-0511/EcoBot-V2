@@ -139,6 +139,18 @@ public class Hardware {
         Methods.SLEEP(250);
         state[0]=Constants.TeleOpState.FREE;
     }
+    public void startDrillDown() {
+        slides.setTargetPosition(Constants.SlideLoweredPosition);
+        slides.setPower(0.5); // Speed limit
+        drill.setPower(1.0);  // Start drilling
+    }
+
+    public void retractDrill() {
+        slides.setTargetPosition(0);
+        slides.setPower(0.5);
+        drill.setPower(0);    // Stop drilling
+    }
+
     public void spitWater(Constants.TeleOpState [] state){
         state[0]=Constants.TeleOpState.ACTION_OCCUPIED;
         waterPump.setPower(1);
